@@ -1,0 +1,23 @@
+# Virtual environment
+venv/
+
+# Google credentials - NEVER commit this
+*.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Django
+*.log
+db.sqlite3
+
+# VS Code
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
