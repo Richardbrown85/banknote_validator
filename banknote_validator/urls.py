@@ -15,10 +15,18 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.urls import path
-from validator.views import validate_note, latest_verdict, index
+from validator.views import validate_note, latest_verdict, live_verdict, index
 
 urlpatterns = [
+    # Serves the main frontend page
     path('', index),
+
+    # Receives image POSTs from the ESP32 and returns a verdict
     path('validate/', validate_note),
+
+    # Returns the latest verdict as JSON (fallback endpoint)
     path('latest-verdict/', latest_verdict),
+
+    # SSE endpoint — streams live verdict updates to the browser
+    path('live/', live_verdict),
 ]

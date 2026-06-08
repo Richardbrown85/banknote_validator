@@ -166,32 +166,32 @@ function setScanning() {
     log('New scan received — processing...', 'warning');
 }
 
-// ---- Poll Django ----
-async function pollVerdict() {
-    try {
-        const response = await fetch('/latest-verdict/');
-        if (!response.ok) throw new Error(`${response.status}`);
+// ---- Server-Sent Events ----
+function startSSE() {
+    const source = new EventSource('/live/');
 
+    source.onopen = function() {
         setConnected(true);
-        const data = await response.json();
+        log('Live connection established', 'success');
+    };
 
-        if (data.verdict && data.verdict !== lastVerdict) {
-            lastVerdict = data.verdict;
-            setScanning();
-            setTimeout(() => showVerdict(data.verdict, data.labels || []), 800);
-        }
-
-    } catch (err) {
-        setConnected(false);
-        log(`Poll error: ${err.message}`, 'error');
+    source.onmessage = function(event) {
+    const data = JSON.parse(event.data);
+    if (data.verdict) {
+        lastVerdict = data.verdict;
+        setScanning();
+        setTimeout(() => showVerdict(data.verdict, data.labels || []), 800);
     }
+};
+
+    source.onerror = function() {
+        setConnected(false);
+        log('Live connection lost — retrying...', 'error');
+    };
 }
 
 // ---- Init ----
 log('System initialised', 'info');
 setStatus('Ready', 'System awaiting note scan', 'idle');
 setConnected(false);
-
-// Initial poll then repeat
-pollVerdict();
-setInterval(pollVerdict, POLL_INTERVAL);
+startSSE();

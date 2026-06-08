@@ -58,7 +58,13 @@ Download a service account JSON key from Google Cloud Console and update the pat
 
 **5. Run the server**
 ```bash
-python manage.py runserver 0.0.0.0:8000
+C:\venvs\banknote_venv\Scripts\python.exe manage.py runserver 0.0.0.0:8000
+```
+
+Then open the frontend at:
+
+```
+http://localhost:8000
 ```
 
 **6. Flash the ESP32**
